@@ -30,7 +30,7 @@ def load_train(csv_file):
 def load_challenge(csv_file):
     df = pd.read_csv(csv_file)
 
-    images = df.as_matrix().astype('float')
+    images = df.as_matrix().astype('float') / 255
     images = images.reshape(-1, 1, 28, 28)
 
     # Convert to torch tensor

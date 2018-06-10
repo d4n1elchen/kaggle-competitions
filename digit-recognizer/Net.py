@@ -57,20 +57,20 @@ class Cnn(nn.Module):
 
         self.output_layer = nn.Linear(dense_layers[-1], n_classes)
 
-    def forward(self, x, dropout=False):
+    def forward(self, x):
         for i in range(self.conv_layer_size):
             x = self.conv[i](x)
             if self.batch_norm:
                 x = self.conv_bn[i](x)
             x = self.pool(F.relu(x))
-            if self.dropout_p and dropout:
-                x = self.dropout(x)
+
+        x = self.dropout(x)
 
         x = x.view(-1, self.conv_flat_size)
 
         for i in range(self.dense_layer_size):
             x = F.relu(self.dense[i](x))
-            if self.dropout_p and dropout:
+            if self.dropout_p:
                 x = self.dropout(x)
 
         x = self.output_layer(x)

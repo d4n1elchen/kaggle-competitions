@@ -10,12 +10,12 @@ from Visualization import imshow
 TRAIN_FILE_PATH = "./train.csv"
 CHALLENGE_FILE_PATH = "./test.csv"
 OUTPUT_PATH = "./submission.csv"
-EPOCH = 100
+EPOCH = 10
 
 train, test = load_train(TRAIN_FILE_PATH)
 
-train_loader = get_dataloader(train)
-test_loader = get_dataloader(test)
+train_loader = get_dataloader(train, batch_size=32)
+test_loader = get_dataloader(test, batch_size=32)
 
 dataiter = iter(train_loader)
 images, labels = dataiter.next()
@@ -23,9 +23,9 @@ images, labels = dataiter.next()
 # imshow(images, labels)
 
 cnn = Cnn(
-    channels=(16, 32),
-    kernel_sizes=3,
-    dense_layers=(512, 1024),
+    channels=(32, 64),
+    kernel_sizes=5,
+    dense_layers=(1024,),
     n_classes=10,
     img_size=28,
     batch_norm=True,
@@ -56,7 +56,7 @@ for epoch in range(EPOCH):
         optimizer.zero_grad()
 
         # forward
-        outputs = cnn(inputs, dropout=True)
+        outputs = cnn(inputs)
 
         # loss
         loss = criterion(outputs, labels)
@@ -74,6 +74,7 @@ for epoch in range(EPOCH):
             running_loss = 0.0
 
 print('Finished Training')
+cnn.eval()
 
 correct = 0
 total = 0
